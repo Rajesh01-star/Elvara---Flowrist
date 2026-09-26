@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { Providers } from "@/components/Providers";
 
 export const viewport: Viewport = {
@@ -10,8 +11,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Elvara Florist",
-  description: "Handcrafted floral arrangements, bouquets, and workshops",
+  title: "Elvara Florist | Artisanal Floral Studio & Boutique",
+  description: "Handcrafted floral arrangements, seasonal bouquets, bespoke botanical installations, and floral design workshops in New York.",
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-icon.png",
@@ -25,10 +26,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-white text-neutral-900 antialiased">
+      <body className="min-h-screen bg-stone-50 text-neutral-900 antialiased flex flex-col selection:bg-stone-200 selection:text-neutral-900">
         <Providers>
           <Navbar />
-          {children}
+          <div className="flex-1">{children}</div>
+          <Footer />
         </Providers>
       </body>
     </html>
