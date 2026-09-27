@@ -1,34 +1,45 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, Leaf, ShieldCheck, MapPin, Clock, ArrowRight } from "lucide-react";
+import { Heart, Leaf, ShieldCheck, MapPin, Clock, ArrowRight, Sparkles, Phone } from "lucide-react";
+import AtelierRadialBackdrop from "@/components/AtelierRadialBackdrop";
 
 export default function AboutPage() {
   return (
     <main className="min-h-screen pb-20 pt-10">
       {/* Hero Header */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-16">
-        <div className="inline-flex items-center px-3 py-1 rounded-full bg-stone-100 text-stone-700 text-xs tracking-wider uppercase font-medium mb-3">
-          <span>Our Story & Philosophy</span>
-        </div>
-        <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-neutral-900 tracking-tight leading-tight">
-          Where Botanical Artistry Meets Mindful Craft
-        </h1>
-        <p className="mt-4 text-base sm:text-lg text-neutral-600 font-light max-w-2xl mx-auto leading-relaxed">
-          Founded in New York, Elvara Florist was born from a desire to return to the poetic, untamed soul of floristry — honoring nature’s fleeting perfection with sculptural grace.
-        </p>
-      </div>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+        <AtelierRadialBackdrop
+          variant="botanical-dusk"
+          placement="center"
+          intensity={1.2}
+          className="p-8 sm:p-14 text-center shadow-2xl border border-emerald-500/20 text-white"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/25 text-emerald-300 text-xs tracking-wider uppercase font-medium mb-4 backdrop-blur-xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+            </span>
+            <span>Our Story & Philosophy</span>
+          </div>
+          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-tight">
+            Where Botanical Artistry Meets Mindful Craft
+          </h1>
+          <p className="mt-4 text-base sm:text-lg text-stone-300 font-light max-w-2xl mx-auto leading-relaxed">
+            Founded in Hyderabad by florist Sridevi Dasari, Elvara was born from a desire to return to the poetic, untamed soul of floristry — honoring nature’s fleeting perfection with sculptural grace.
+          </p>
 
-      {/* Main Image Banner */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
-        <div className="relative aspect-[16/9] sm:aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl border border-stone-200">
-          <Image
-            src="/images/hero_flower.png"
-            alt="Elvara Atelier Studio Florals"
-            fill
-            priority
-            className="object-cover"
-          />
-        </div>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs text-stone-200">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
+              <Leaf size={14} className="text-emerald-400" /> 100% Regenerative Sourcing
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
+              <Sparkles size={14} className="text-emerald-400" /> Foam-Free Sculptural Mechanics
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
+              <Clock size={14} className="text-emerald-400" /> Madhapur Studio · Hyderabad
+            </span>
+          </div>
+        </AtelierRadialBackdrop>
       </div>
 
       {/* Philosophy Pillars */}
@@ -113,16 +124,22 @@ export default function AboutPage() {
               Come Say Hello
             </span>
             <h3 className="font-serif text-2xl sm:text-3xl text-neutral-900 mt-1">
-              Visit Our Mulberry St Studio
+              Visit Our Madhapur Studio
             </h3>
             <div className="mt-4 space-y-2 text-xs sm:text-sm text-neutral-600">
+              <p className="flex items-start gap-2">
+                <MapPin size={16} className="text-stone-500 shrink-0 mt-0.5" />
+                <span className="leading-snug">My Home Navadweepa, 606, Varuna, Patrika Nagar, Madhapur, Hitec City Road, Hyderabad – 500081</span>
+              </p>
               <p className="flex items-center gap-2">
-                <MapPin size={16} className="text-stone-500 shrink-0" />
-                148 Mulberry St, Atelier Floral, New York, NY 10013
+                <Phone size={16} className="text-stone-500 shrink-0" />
+                <a href="tel:+919652722499" className="hover:underline font-medium text-neutral-900">
+                  +91 96527 22499
+                </a>
               </p>
               <p className="flex items-center gap-2">
                 <Clock size={16} className="text-stone-500 shrink-0" />
-                Tuesday through Sunday, 9:00 AM – 7:00 PM
+                <span>Tuesday through Sunday, 9:00 AM – 7:00 PM</span>
               </p>
             </div>
           </div>

@@ -374,10 +374,10 @@ export default function ProductDetailPage() {
                 {openAccordion === "delivery" && (
                   <div className="p-4 pt-0 text-xs text-neutral-600 space-y-1.5 border-t border-stone-100">
                     <p>
-                      Delivered by hand in temperature-controlled couriers throughout NYC (Manhattan, Brooklyn, Queens).
+                      Delivered by hand in temperature-controlled couriers throughout Hyderabad (Madhapur, Hitec City, Jubilee Hills, Banjara Hills, Gachibowli).
                     </p>
                     <p>
-                      Same-day delivery available for orders placed before 1:00 PM EST. Each arrangement includes a handwritten botanical gift card.
+                      Same-day delivery available for orders placed before 1:00 PM IST. Each arrangement includes a handwritten botanical gift card.
                     </p>
                   </div>
                 )}

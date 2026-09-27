@@ -12,7 +12,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "Elvara Florist | Artisanal Floral Studio & Boutique",
-  description: "Handcrafted floral arrangements, seasonal bouquets, bespoke botanical installations, and floral design workshops in New York.",
+  description: "Handcrafted floral arrangements, seasonal bouquets, bespoke botanical installations, and floral design workshops in Hyderabad.",
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-icon.png",

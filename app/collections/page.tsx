@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Search, SlidersHorizontal, Loader2, Filter } from "lucide-react";
 import ProductCard, { ProductItem } from "@/components/ProductCard";
+import AtelierRadialBackdrop from "@/components/AtelierRadialBackdrop";
 
 const CATEGORIES = [
   { id: "all", label: "All Offerings" },
@@ -120,17 +121,26 @@ export default function CollectionsPage() {
     <main className="min-h-screen pb-20 pt-8">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-        <div className="border-b border-stone-200/80 pb-8 text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center px-3 py-1 rounded-full bg-stone-100 text-stone-700 text-xs tracking-wider uppercase font-medium mb-3">
+        <AtelierRadialBackdrop
+          variant="terracotta-earth"
+          placement="center"
+          intensity={1.1}
+          className="p-8 sm:p-12 text-center max-w-4xl mx-auto shadow-2xl border border-amber-500/20 text-white"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/25 text-amber-300 text-xs tracking-wider uppercase font-medium mb-4 backdrop-blur-xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+            </span>
             <span>Botanical Portfolio</span>
           </div>
-          <h1 className="font-serif text-4xl sm:text-5xl text-neutral-900 tracking-tight">
+          <h1 className="font-serif text-4xl sm:text-5xl text-white tracking-tight">
             The Atelier Collection
           </h1>
-          <p className="mt-3 text-sm sm:text-base text-neutral-600 font-light">
+          <p className="mt-3 text-sm sm:text-base text-stone-300 font-light max-w-xl mx-auto leading-relaxed">
             Explore our curated arrangements, limited edition seasonal bouquets, botanical design workshops, and handcrafted vessel gifts.
           </p>
-        </div>
+        </AtelierRadialBackdrop>
 
         {/* Search & Filter Bar */}
         <div className="mt-8 flex flex-col md:flex-row items-center justify-between gap-4">

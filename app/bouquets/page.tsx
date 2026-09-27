@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Leaf, Loader2, HeartHandshake, ShieldCheck } from "lucide-react";
 import ProductCard, { ProductItem } from "@/components/ProductCard";
+import AtelierRadialBackdrop from "@/components/AtelierRadialBackdrop";
 
 const BOUQUET_FALLBACKS: ProductItem[] = [
   {
@@ -53,29 +54,38 @@ export default function BouquetsPage() {
     <main className="min-h-screen pb-20 pt-8">
       {/* Header Banner */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-        <div className="rounded-3xl bg-amber-50/60 border border-amber-200/50 p-8 sm:p-12 text-center max-w-4xl mx-auto">
-          <div className="inline-flex items-center px-3 py-1 rounded-full bg-white text-stone-800 text-xs tracking-wider uppercase font-medium mb-3 shadow-xs">
+        <AtelierRadialBackdrop
+          variant="rose-velvet"
+          placement="top-right"
+          intensity={1.15}
+          className="p-8 sm:p-12 text-center max-w-4xl mx-auto shadow-2xl border border-rose-500/20 text-white"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-400/25 text-rose-300 text-xs tracking-wider uppercase font-medium mb-4 backdrop-blur-xs">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-400"></span>
+            </span>
             <span>Hand-Tied Botanical Art</span>
           </div>
-          <h1 className="font-serif text-4xl sm:text-5xl text-neutral-900 tracking-tight">
+          <h1 className="font-serif text-4xl sm:text-5xl text-white tracking-tight">
             Artisanal Seasonal Bouquets
           </h1>
-          <p className="mt-3 text-sm sm:text-base text-neutral-600 font-light max-w-xl mx-auto leading-relaxed">
-            Crafted stem-by-stem using stems cut within 24 hours. Finished with raw French silk ribbon and bespoke handwritten botanical care cards.
+          <p className="mt-3 text-sm sm:text-base text-stone-300 font-light max-w-xl mx-auto leading-relaxed">
+            Crafted stem-by-stem using fresh cuts harvested within 24 hours. Finished with raw French silk ribbon and bespoke handwritten botanical care cards.
           </p>
 
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-600">
-            <span className="flex items-center gap-1.5">
-              <Leaf size={14} className="text-amber-600" /> 100% Regenerative Stems
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs text-stone-200">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
+              <Leaf size={14} className="text-rose-400" /> 100% Regenerative Stems
             </span>
-            <span className="flex items-center gap-1.5">
-              <HeartHandshake size={14} className="text-amber-600" /> Hand-Wrapped with Silk Ribbon
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
+              <HeartHandshake size={14} className="text-rose-400" /> Hand-Wrapped with Silk Ribbon
             </span>
-            <span className="flex items-center gap-1.5">
-              <ShieldCheck size={14} className="text-amber-600" /> 7-Day Bloom Freshness Guarantee
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
+              <ShieldCheck size={14} className="text-rose-400" /> 7-Day Bloom Freshness Guarantee
             </span>
           </div>
-        </div>
+        </AtelierRadialBackdrop>
 
         {/* Sort Bar */}
         <div className="mt-8 flex items-center justify-between border-b border-stone-200/80 pb-4">

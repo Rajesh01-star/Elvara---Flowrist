@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Heart, ShieldCheck, Truck, Clock, Award, Star, Compass } from "lucide-react";
+import { ArrowRight, Heart, ShieldCheck, Truck, Clock, Award, Star, Compass, Sparkles } from "lucide-react";
 import ProductCard, { ProductItem } from "@/components/ProductCard";
+import AtelierRadialBackdrop from "@/components/AtelierRadialBackdrop";
 import { getPublicProductsAction } from "@/app/admin/actions";
 
 const FALLBACK_PRODUCTS: ProductItem[] = [
@@ -274,45 +275,75 @@ export default async function HomePage() {
       {/* 4. WORKSHOPS & MASTERCLASSES HIGHLIGHT */}
       <section className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl bg-neutral-900 text-white overflow-hidden shadow-2xl">
+          <AtelierRadialBackdrop
+            variant="golden-hour"
+            intensity={1.15}
+            withGrain={true}
+            className="shadow-2xl border border-amber-500/20 text-white"
+          >
             <div className="grid grid-cols-1 lg:grid-cols-12 items-center">
               <div className="p-8 sm:p-12 lg:p-16 lg:col-span-7 space-y-6">
-                <span className="inline-block text-xs font-semibold uppercase tracking-widest text-amber-300">
-                  Interactive Studio Experiences
-                </span>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/25 text-amber-300 text-xs font-semibold uppercase tracking-widest backdrop-blur-xs">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+                  </span>
+                  <span>Interactive Studio Experiences</span>
+                </div>
+
                 <h3 className="font-serif text-3xl sm:text-4xl leading-tight">
                   Learn the art of artisanal floral design in our sun-drenched atelier.
                 </h3>
-                <p className="text-neutral-300 text-sm sm:text-base font-light leading-relaxed max-w-lg">
+                <p className="text-stone-300 text-sm sm:text-base font-light leading-relaxed max-w-lg">
                   Join our resident master florists for weekend tea, botanical color harmony, and hands-on flower sculpting. Walk away with your own bespoke centerpiece in a handcrafted ceramic vase.
                 </p>
+
+                {/* Thoughtful atelier inclusions */}
+                <div className="flex flex-wrap gap-2 pt-1 text-xs text-stone-300">
+                  <span className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 backdrop-blur-xs">
+                    🌿 Foam-Free Mechanics
+                  </span>
+                  <span className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 backdrop-blur-xs">
+                    🏺 Handcrafted Ceramic Urn Included
+                  </span>
+                  <span className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 backdrop-blur-xs">
+                    🍵 Botanical Tea Pairing
+                  </span>
+                </div>
+
                 <div className="flex flex-wrap items-center gap-4 pt-2">
                   <Link
                     href="/workshops"
-                    className="rounded-full bg-white text-neutral-950 px-6 py-3 text-sm font-medium hover:bg-neutral-100 transition-colors inline-flex items-center gap-2"
+                    className="rounded-full bg-white text-neutral-950 px-6 py-3 text-sm font-medium hover:bg-amber-50 hover:shadow-lg hover:shadow-amber-500/10 transition-all inline-flex items-center gap-2 group"
                   >
                     <span>Reserve Your Seat</span>
-                    <ArrowRight size={15} />
+                    <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
                   </Link>
                   <Link
                     href="/contact"
-                    className="rounded-full border border-neutral-700 text-white px-6 py-3 text-sm font-medium hover:bg-neutral-800 transition-colors"
+                    className="rounded-full border border-stone-700/80 bg-white/5 backdrop-blur-xs text-white px-6 py-3 text-sm font-medium hover:bg-white/10 hover:border-stone-500 transition-all"
                   >
                     Private Group Inquiries
                   </Link>
                 </div>
               </div>
 
-              <div className="lg:col-span-5 relative h-72 lg:h-full min-h-[340px]">
+              <div className="lg:col-span-5 relative h-72 lg:h-full min-h-[380px] overflow-hidden">
                 <Image
                   src="/images/floral_workshop.jpg"
                   alt="Floral workshop participant"
                   fill
-                  className="object-cover opacity-90"
+                  className="object-cover opacity-95 transition-transform duration-700 hover:scale-105"
                 />
+                {/* Seamless ambient vignette blending into the glowing room */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#141210] via-transparent to-transparent opacity-80" />
+                <div className="absolute bottom-4 right-4 z-10 hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/15 text-[11px] text-stone-200 shadow-sm">
+                  <Sparkles size={12} className="text-amber-300" />
+                  <span>Atelier Session · Madhapur, Hyderabad</span>
+                </div>
               </div>
             </div>
-          </div>
+          </AtelierRadialBackdrop>
         </div>
       </section>
 
@@ -332,21 +363,21 @@ export default async function HomePage() {
             {[
               {
                 quote:
-                  "Elvara provided the florals for our wedding in Tribeca. Guests are still talking about the scent of the garden roses and the sculptural tablescape. Truly unforgettable.",
-                author: "Elena & Marcus Vance",
-                location: "Tribeca, NYC",
+                  "Elvara provided the florals for our wedding celebration. Guests are still talking about the scent of the garden roses and the sculptural tablescape. Truly unforgettable.",
+                author: "Elena & Marcus",
+                location: "Jubilee Hills, Hyderabad",
               },
               {
                 quote:
-                  "The Saturday floral masterclass was peaceful, inspiring, and so thorough. Drinking sparkling cider while learning foam-free mechanics was the highlight of my month.",
-                author: "Claire Dupont",
-                location: "West Village, NYC",
+                  "The Saturday floral masterclass was peaceful, inspiring, and so thorough. Learning foam-free mechanics at the Madhapur atelier was the highlight of my month.",
+                author: "Claire D.",
+                location: "Madhapur, Hyderabad",
               },
               {
                 quote:
                   "I ordered the Autumn Peony bouquet for my anniversary. The white-glove delivery arrived precisely on time in flawless condition. The blooms lasted almost two weeks!",
                 author: "Julian Hayes",
-                location: "Brooklyn Heights",
+                location: "Banjara Hills, Hyderabad",
               },
             ].map((review, i) => (
               <div

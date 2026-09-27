@@ -101,7 +101,9 @@ export default function Footer() {
             <div className="space-y-2.5 text-sm text-neutral-600">
               <div className="flex items-start gap-2">
                 <MapPin size={16} className="mt-0.5 text-stone-500 shrink-0" />
-                <span>148 Mulberry St, Atelier Floral, New York, NY 10013</span>
+                <span className="leading-snug">
+                  My Home Navadweepa, 606, Varuna, Patrika Nagar, Madhapur, Hitec City Road, Hyderabad – 500081
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock size={16} className="text-stone-500 shrink-0" />
@@ -109,7 +111,9 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Phone size={16} className="text-stone-500 shrink-0" />
-                <span>+1 (212) 555-0198</span>
+                <a href="tel:+919652722499" className="hover:text-neutral-900 transition-colors">
+                  +91 96527 22499
+                </a>
               </div>
             </div>
           </div>

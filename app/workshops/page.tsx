@@ -3,8 +3,9 @@
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, Users, Clock, MapPin, CheckCircle2, ArrowRight } from "lucide-react";
+import { Calendar, Users, Clock, MapPin, CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
 import ProductCard, { ProductItem } from "@/components/ProductCard";
+import AtelierRadialBackdrop from "@/components/AtelierRadialBackdrop";
 
 const WORKSHOP_FALLBACKS: ProductItem[] = [
   {
@@ -40,20 +41,29 @@ export default function WorkshopsPage() {
     <main className="min-h-screen pb-20 pt-8">
       {/* Hero Showcase */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-        <div className="relative rounded-3xl overflow-hidden bg-neutral-900 text-white shadow-2xl">
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 items-center p-8 sm:p-14 lg:p-16">
+        <AtelierRadialBackdrop
+          variant="golden-hour"
+          placement="top-left"
+          intensity={1.2}
+          className="shadow-2xl border border-amber-500/20 text-white"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-12 items-center p-8 sm:p-14 lg:p-16">
             <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs tracking-wider uppercase font-medium">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/25 text-amber-300 text-xs tracking-wider uppercase font-medium backdrop-blur-xs">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+                </span>
                 <span>Hands-on Atelier Experience</span>
               </div>
               <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl leading-tight">
                 The Botanical Studio Masterclasses
               </h1>
-              <p className="text-neutral-300 text-base sm:text-lg font-light leading-relaxed max-w-xl">
+              <p className="text-stone-300 text-base sm:text-lg font-light leading-relaxed max-w-xl">
                 Slow down, step inside our sunlit conservatory, and learn time-honored artisanal floral mechanics from master botanical sculptors.
               </p>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-neutral-800 text-xs text-neutral-300">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-white/10 text-xs text-stone-300">
                 <div className="flex items-center gap-2">
                   <Users size={16} className="text-amber-400" />
                   <span>Small cohorts (8 max)</span>
@@ -64,21 +74,25 @@ export default function WorkshopsPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin size={16} className="text-amber-400" />
-                  <span>Mulberry St Atelier</span>
+                  <span>Madhapur Atelier · Hyderabad</span>
                 </div>
               </div>
             </div>
 
-            <div className="lg:col-span-5 mt-8 lg:mt-0 relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl border border-neutral-800">
+            <div className="lg:col-span-5 mt-8 lg:mt-0 relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border border-white/10 group">
               <Image
                 src="/images/floral_workshop.jpg"
                 alt="Floral workshop"
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute bottom-3 right-3 z-10 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/15 text-[11px] text-stone-200">
+                <span>Madhapur Studio Atelier</span>
+              </div>
             </div>
           </div>
-        </div>
+        </AtelierRadialBackdrop>
       </div>
 
       {/* Workshop Offerings Grid */}

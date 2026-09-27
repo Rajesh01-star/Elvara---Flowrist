@@ -11,8 +11,10 @@ import {
   CheckCircle2, 
   Loader2, 
   Calendar,
-  MessageSquare
+  MessageSquare,
+  Sparkles
 } from "lucide-react";
+import AtelierRadialBackdrop from "@/components/AtelierRadialBackdrop";
 
 export default function ContactPage() {
   const [name, setName] = useState("");
@@ -66,32 +68,65 @@ export default function ContactPage() {
     <main className="min-h-screen pb-24 pt-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center px-3 py-1 rounded-full bg-stone-100 text-stone-700 text-xs tracking-wider uppercase font-medium mb-3">
-            <span>Consultations & Inquiries</span>
-          </div>
-          <h1 className="font-serif text-4xl sm:text-5xl text-neutral-900 tracking-tight">
-            Connect With Our Atelier
-          </h1>
-          <p className="mt-3 text-sm sm:text-base text-neutral-600 font-light leading-relaxed">
-            Whether planning an intimate wedding, commissioning a bespoke sculptural centerpiece, or inquiring about private floral masterclasses, we would love to hear from you.
-          </p>
+        <div className="max-w-4xl mx-auto mb-16">
+          <AtelierRadialBackdrop
+            variant="champagne-twilight"
+            placement="split"
+            intensity={1.15}
+            className="p-8 sm:p-12 text-center shadow-2xl border border-purple-500/20 text-white"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-400/25 text-purple-300 text-xs tracking-wider uppercase font-medium mb-4 backdrop-blur-xs">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+              </span>
+              <span>Consultations & Inquiries</span>
+            </div>
+            <h1 className="font-serif text-4xl sm:text-5xl text-white tracking-tight">
+              Connect With Our Atelier
+            </h1>
+            <p className="mt-3 text-sm sm:text-base text-stone-300 font-light max-w-xl mx-auto leading-relaxed">
+              Whether planning an intimate wedding, commissioning a bespoke sculptural centerpiece, or inquiring about private masterclasses, we would love to hear from you.
+            </p>
+
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs text-stone-200">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
+                <Sparkles size={14} className="text-amber-400" /> Bespoke Floral Commissions
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
+                <Mail size={14} className="text-purple-400" /> 24-Hour Atelier Response
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
+                <MapPin size={14} className="text-amber-400" /> Madhapur Studio · Hyderabad
+              </span>
+            </div>
+          </AtelierRadialBackdrop>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Studio Details & Hours */}
           <div className="lg:col-span-5 space-y-8">
             <div className="rounded-3xl bg-white p-7 sm:p-8 border border-stone-200/80 shadow-xs space-y-6">
-              <h3 className="font-serif text-2xl text-neutral-900">
-                Atelier Floral & Conservatory
-              </h3>
+              <div>
+                <span className="text-xs uppercase tracking-wider font-semibold text-stone-500">
+                  Lead Florist · Sridevi Dasari
+                </span>
+                <h3 className="font-serif text-2xl text-neutral-900 mt-0.5">
+                  Atelier Floral & Conservatory
+                </h3>
+              </div>
 
               <div className="space-y-4 text-xs sm:text-sm text-neutral-600">
                 <div className="flex items-start gap-3">
                   <MapPin size={18} className="text-stone-500 mt-0.5 shrink-0" />
                   <div>
                     <strong className="block text-neutral-900 font-medium">Studio Address</strong>
-                    <span>148 Mulberry St, Atelier Floral, New York, NY 10013</span>
+                    <span className="leading-relaxed block text-stone-700">
+                      My Home Navadweepa<br />
+                      606, Varuna, Patrika Nagar<br />
+                      Madhapur, Hitec City Road<br />
+                      Hyderabad – 500081
+                    </span>
                   </div>
                 </div>
 
@@ -107,8 +142,10 @@ export default function ContactPage() {
                 <div className="flex items-start gap-3">
                   <Phone size={18} className="text-stone-500 mt-0.5 shrink-0" />
                   <div>
-                    <strong className="block text-neutral-900 font-medium">Direct Line</strong>
-                    <span>+1 (212) 555-0198</span>
+                    <strong className="block text-neutral-900 font-medium">Direct Line / WhatsApp</strong>
+                    <a href="tel:+919652722499" className="hover:underline text-neutral-900 font-medium">
+                      +91 96527 22499
+                    </a>
                   </div>
                 </div>
 
