@@ -6,7 +6,8 @@ import AtelierRadialBackdrop from "@/components/AtelierRadialBackdrop";
 import { getPublicProductsAction, getPublicTestimonialsAction } from "@/app/admin/actions";
 
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function HomePage() {
   let products: ProductItem[] = [];

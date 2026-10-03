@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { 
   ShieldCheck, 
   Package, 
@@ -39,6 +40,7 @@ import {
 import { toast } from "sonner";
 
 export default function AdminPage() {
+  const router = useRouter();
   const { data: session, isPending: sessionLoading } = useSession();
   const queryClient = useQueryClient();
 
@@ -114,6 +116,7 @@ export default function AdminPage() {
     queryClient.invalidateQueries({ queryKey: ["admin-products"] });
     queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
     queryClient.invalidateQueries({ queryKey: ["products"] });
+    router.refresh();
   };
 
   const createMutation = useMutation({
@@ -193,6 +196,7 @@ export default function AdminPage() {
     onSuccess: () => {
       toast.success("Testimonial published!");
       queryClient.invalidateQueries({ queryKey: ["admin-testimonials"] });
+      router.refresh();
       setTestimonialModalOpen(false);
     },
     onError: (err: any) => toast.error(err?.message || "Failed to create testimonial"),
@@ -212,6 +216,7 @@ export default function AdminPage() {
     onSuccess: () => {
       toast.success("Testimonial updated!");
       queryClient.invalidateQueries({ queryKey: ["admin-testimonials"] });
+      router.refresh();
       setTestimonialModalOpen(false);
     },
     onError: (err: any) => toast.error(err?.message || "Failed to update testimonial"),
@@ -229,6 +234,7 @@ export default function AdminPage() {
     onSuccess: () => {
       toast.success("Testimonial deleted!");
       queryClient.invalidateQueries({ queryKey: ["admin-testimonials"] });
+      router.refresh();
       setDeleteConfirmItem(null);
     },
     onError: (err: any) => toast.error(err?.message || "Failed to delete testimonial"),

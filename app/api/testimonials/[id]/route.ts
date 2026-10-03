@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { auth, isConfiguredAdminEmail } from "@/lib/auth";
 import { headers } from "next/headers";
+import { revalidatePath } from "next/cache";
 
 export const dynamic = "force-dynamic";
 
@@ -58,6 +59,9 @@ export async function PUT(
       return NextResponse.json({ success: false, error: "Testimonial not found" }, { status: 404 });
     }
 
+    revalidatePath("/");
+    revalidatePath("/admin");
+
     return NextResponse.json({ success: true, data: updated });
   } catch (error: any) {
     console.error("Error updating testimonial:", error);
@@ -84,6 +88,9 @@ export async function DELETE(
 
     const { id } = await params;
     await db.delete(testimonialsTable).where(eq(testimonialsTable.id, id));
+
+    revalidatePath("/");
+    revalidatePath("/admin");
 
     return NextResponse.json({ success: true, message: "Testimonial deleted successfully" });
   } catch (error: any) {

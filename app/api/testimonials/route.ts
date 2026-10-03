@@ -4,6 +4,7 @@ import { asc, desc, eq } from "drizzle-orm";
 import { NextResponse, NextRequest } from "next/server";
 import { auth, isConfiguredAdminEmail } from "@/lib/auth";
 import { headers } from "next/headers";
+import { revalidatePath } from "next/cache";
 
 export const dynamic = "force-dynamic";
 
@@ -83,6 +84,9 @@ export async function POST(request: Request) {
         orderIndex: typeof orderIndex === "number" ? orderIndex : 0,
       })
       .returning();
+
+    revalidatePath("/");
+    revalidatePath("/admin");
 
     return NextResponse.json({ success: true, data: created });
   } catch (error: any) {

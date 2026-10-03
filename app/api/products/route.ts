@@ -3,6 +3,7 @@ import { productsTable } from "@/db/schema";
 import { PRODUCT_PUBLIC_FIELDS, getOrderByClause } from "@/db/queries";
 import { arrayContains, eq, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export const dynamic = "force-dynamic";
 
@@ -96,6 +97,11 @@ export async function POST(request: Request) {
         userId: session.user.id,
       })
       .returning();
+
+    revalidatePath("/");
+    revalidatePath("/collections");
+    revalidatePath("/bouquets");
+    revalidatePath("/admin");
 
     return NextResponse.json({
       success: true,

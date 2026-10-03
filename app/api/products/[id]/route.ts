@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { auth, isConfiguredAdminEmail } from "@/lib/auth";
 import { headers } from "next/headers";
+import { revalidatePath } from "next/cache";
 
 export const dynamic = "force-dynamic";
 
@@ -82,6 +83,11 @@ export async function PUT(
       .where(eq(productsTable.id, id))
       .returning();
 
+    revalidatePath("/");
+    revalidatePath("/collections");
+    revalidatePath("/bouquets");
+    revalidatePath("/admin");
+
     return NextResponse.json({ success: true, data: updated });
   } catch (error: any) {
     return NextResponse.json(
@@ -103,6 +109,11 @@ export async function DELETE(
 
     const { id } = await params;
     await db.delete(productsTable).where(eq(productsTable.id, id));
+
+    revalidatePath("/");
+    revalidatePath("/collections");
+    revalidatePath("/bouquets");
+    revalidatePath("/admin");
 
     return NextResponse.json({ success: true, message: "Product deleted successfully" });
   } catch (error: any) {
