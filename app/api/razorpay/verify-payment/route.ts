@@ -6,9 +6,26 @@ import { eq } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = await req.json();
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, isDemo } = await req.json();
 
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+    if (!razorpay_order_id) {
+      return NextResponse.json({ error: "Missing required order ID" }, { status: 400 });
+    }
+
+    const isDemoOrder = isDemo || razorpay_order_id.startsWith("order_demo_");
+
+    // Handle demo payment confirmation
+    if (isDemoOrder) {
+      const demoPaymentId = razorpay_payment_id || `pay_demo_${Date.now()}`;
+      await db
+        .update(ordersTable)
+        .set({ status: "paid", paymentId: demoPaymentId })
+        .where(eq(ordersTable.id, razorpay_order_id));
+
+      return NextResponse.json({ success: true, isDemo: true });
+    }
+
+    if (!razorpay_payment_id || !razorpay_signature) {
       return NextResponse.json({ error: "Missing required payment fields" }, { status: 400 });
     }
 

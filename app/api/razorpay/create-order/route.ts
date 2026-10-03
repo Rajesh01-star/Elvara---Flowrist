@@ -36,14 +36,57 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid price for checkout" }, { status: 400 });
     }
 
-    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    if (!session || !session.user) {
       return NextResponse.json(
-        { error: "Payment gateway credentials not configured" },
-        { status: 500 }
+        { error: "Please sign in to place a floral order", requiresAuth: true },
+        { status: 401 }
       );
     }
 
-    // Initialize Razorpay SDK
+    const {
+      customerName,
+      customerEmail,
+      customerPhone,
+      shippingAddress,
+      city,
+      postalCode,
+      deliveryNotes,
+    } = body;
+
+    const isDemoMode =
+      !process.env.RAZORPAY_KEY_ID ||
+      !process.env.RAZORPAY_KEY_SECRET ||
+      process.env.RAZORPAY_KEY_ID.includes("xxxxxx");
+
+    // Demo Mode Checkout: Generates verified orders without needing merchant keys
+    if (isDemoMode) {
+      const demoOrderId = `order_demo_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+
+      await db.insert(ordersTable).values({
+        id: demoOrderId,
+        userId: session.user.id,
+        postId: product.id,
+        amount: product.price || "0",
+        status: "created",
+        customerName: customerName || session.user.name || null,
+        customerEmail: customerEmail || session.user.email || null,
+        customerPhone: customerPhone || null,
+        shippingAddress: shippingAddress || null,
+        city: city || null,
+        postalCode: postalCode || null,
+        deliveryNotes: deliveryNotes || null,
+      });
+
+      return NextResponse.json({
+        isDemo: true,
+        orderId: demoOrderId,
+        amount: amountInSmallestUnit,
+        currency: "USD",
+        productTitle: product.title,
+      });
+    }
+
+    // Initialize Razorpay SDK if keys are configured
     const razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -65,6 +108,13 @@ export async function POST(req: NextRequest) {
       postId: product.id,
       amount: product.price || "0",
       status: "created",
+      customerName: customerName || session.user.name || null,
+      customerEmail: customerEmail || session.user.email || null,
+      customerPhone: customerPhone || null,
+      shippingAddress: shippingAddress || null,
+      city: city || null,
+      postalCode: postalCode || null,
+      deliveryNotes: deliveryNotes || null,
     });
 
     return NextResponse.json({

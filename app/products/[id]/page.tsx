@@ -20,8 +20,10 @@ import {
   Calendar
 } from "lucide-react";
 import { formatPrice, getMediaUrl, formatViews } from "@/lib/utils";
-import { useRazorpay } from "@/lib/useRazorpay";
+import { useRazorpay, CustomerInfo } from "@/lib/useRazorpay";
 import { ProductItem } from "@/components/ProductCard";
+import RelaxingLoader from "@/components/RelaxingLoader";
+import CheckoutModal from "@/components/CheckoutModal";
 
 const DEMO_PRODUCTS: Record<string, ProductItem> = {
   "peony-symphony-01": {
@@ -125,10 +127,15 @@ export default function ProductDetailPage() {
     }
   }, [product?.id]);
 
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+
   // Razorpay payment hook
   const { initiatePurchase, getStatus } = useRazorpay({
     brandName: "Elvara Florist",
     themeColor: "#1c1917",
+    onSuccess: () => {
+      setCheckoutOpen(false);
+    },
   });
 
   const paymentStatus = product ? getStatus(product.id) : "idle";
@@ -144,9 +151,8 @@ export default function ProductDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen py-32 flex flex-col items-center justify-center text-neutral-500">
-        <Loader2 className="size-8 animate-spin text-stone-600 mb-3" />
-        <p className="text-sm">Unfolding botanical creation...</p>
+      <div className="min-h-screen py-32 flex items-center justify-center">
+        <RelaxingLoader label="Unfolding botanical creation..." size={160} />
       </div>
     );
   }
@@ -283,20 +289,14 @@ export default function ProductDetailPage() {
             {/* Checkout CTA */}
             <div className="pt-2 space-y-3">
               <button
-                onClick={() =>
-                  initiatePurchase({
-                    id: product.id,
-                    title: product.title,
-                    price: product.price || null,
-                  })
-                }
+                onClick={() => setCheckoutOpen(true)}
                 disabled={isPurchasing}
-                className="w-full inline-flex items-center justify-center gap-2.5 rounded-full bg-neutral-900 py-4 text-sm font-medium text-white hover:bg-neutral-800 disabled:opacity-50 transition-all shadow-md group"
+                className="w-full inline-flex items-center justify-center gap-2.5 rounded-full bg-neutral-900 py-4 text-sm font-medium text-white hover:bg-neutral-800 disabled:opacity-50 transition-all shadow-md group cursor-pointer"
               >
                 {isPurchasing ? (
                   <>
                     <Loader2 className="size-4 animate-spin" />
-                    <span>Securing Order via Razorpay...</span>
+                    <span>Securing Order...</span>
                   </>
                 ) : (
                   <>
@@ -311,9 +311,26 @@ export default function ProductDetailPage() {
               </button>
 
               <p className="text-center text-[11px] text-neutral-400">
-                Encrypted checkout via Razorpay • 100% Satisfaction Guarantee
+                Encrypted checkout • Satisfaction Guaranteed • Fast Courier Delivery
               </p>
             </div>
+
+            <CheckoutModal
+              isOpen={checkoutOpen}
+              onClose={() => setCheckoutOpen(false)}
+              product={product}
+              onConfirmPurchase={(customerInfo) =>
+                initiatePurchase(
+                  {
+                    id: product.id,
+                    title: product.title,
+                    price: product.price || null,
+                  },
+                  customerInfo
+                )
+              }
+              isProcessing={isPurchasing}
+            />
 
             {/* Accordions: Care, Delivery, Specs */}
             <div className="border-t border-stone-200/80 pt-4 space-y-3">

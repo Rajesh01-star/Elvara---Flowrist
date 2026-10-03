@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { 
-  Mail, 
-  MapPin, 
-  Clock, 
-  Phone, 
-  Send, 
-  CheckCircle2, 
-  Loader2, 
+import {
+  Mail,
+  MapPin,
+  Clock,
+  Phone,
+  Send,
+  CheckCircle2,
+  Loader2,
   Calendar,
   MessageSquare,
   Sparkles
@@ -68,7 +68,7 @@ export default function ContactPage() {
     <main className="min-h-screen pb-24 pt-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="max-w-4xl mx-auto mb-16">
+        <div className="max-w-7xl mx-auto mb-16">
           <AtelierRadialBackdrop
             variant="champagne-twilight"
             placement="split"
@@ -82,24 +82,12 @@ export default function ContactPage() {
               </span>
               <span>Consultations & Inquiries</span>
             </div>
-            <h1 className="font-serif text-4xl sm:text-5xl text-white tracking-tight">
+            <h1 className="font-serif text-3xl sm:text-4xl text-white tracking-tight">
               Connect With Our Atelier
             </h1>
-            <p className="mt-3 text-sm sm:text-base text-stone-300 font-light max-w-xl mx-auto leading-relaxed">
-              Whether planning an intimate wedding, commissioning a bespoke sculptural centerpiece, or inquiring about private masterclasses, we would love to hear from you.
+            <p className="mt-3 text-sm sm:text-base text-stone-300 font-light max-w-xl mx-auto leading-relaxed">              Whether planning an intimate wedding, commissioning a bespoke sculptural centerpiece, or inquiring about private masterclasses, we would love to hear from you.
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs text-stone-200">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
-                <Sparkles size={14} className="text-amber-400" /> Bespoke Floral Commissions
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
-                <Mail size={14} className="text-purple-400" /> 24-Hour Atelier Response
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
-                <MapPin size={14} className="text-amber-400" /> Madhapur Studio · Hyderabad
-              </span>
-            </div>
           </AtelierRadialBackdrop>
         </div>
 
@@ -127,15 +115,6 @@ export default function ContactPage() {
                       Madhapur, Hitec City Road<br />
                       Hyderabad – 500081
                     </span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <Clock size={18} className="text-stone-500 mt-0.5 shrink-0" />
-                  <div>
-                    <strong className="block text-neutral-900 font-medium">Hours of Artistry</strong>
-                    <span>Tuesday – Sunday: 9:00 AM – 7:00 PM</span>
-                    <span className="block text-stone-400 text-xs mt-0.5">Closed Mondays for botanical harvest</span>
                   </div>
                 </div>
 

@@ -5,75 +5,24 @@ import { useQuery } from "@tanstack/react-query";
 import { Search, SlidersHorizontal, Loader2, Filter } from "lucide-react";
 import ProductCard, { ProductItem } from "@/components/ProductCard";
 import AtelierRadialBackdrop from "@/components/AtelierRadialBackdrop";
+import RelaxingLoader from "@/components/RelaxingLoader";
 
 const CATEGORIES = [
   { id: "all", label: "All Offerings" },
   { id: "bouquets", label: "Hand-Tied Bouquets" },
   { id: "collections", label: "Vessel Arrangements" },
-  { id: "workshops", label: "Floral Workshops" },
   { id: "gifts", label: "Botanical Gifts" },
 ];
 
 const POPULAR_TAGS = [
+  "luxury",
   "roses",
   "peonies",
-  "luxury",
+  "beautiful",
   "wedding",
   "dried",
   "sculptural",
   "orchids",
-  "masterclass",
-];
-
-const FALLBACK_COLLECTION_ITEMS: ProductItem[] = [
-  {
-    id: "peony-symphony-01",
-    title: "Ethereal Peony & Garden Rose Arrangement",
-    description: "Lush blush peonies, fragrant garden roses, and silver dollar eucalyptus in a fluted ceramic urn.",
-    price: "115.00",
-    assetType: "bouquets",
-    tags: ["peonies", "luxury", "bestseller"],
-    views: 890,
-    imageUrl: "/images/hero_flower.png",
-    thumbnails: ["/images/hero_flower.png"],
-    activeThumbnailIndex: 0,
-  },
-  {
-    id: "bouquet-artisan-02",
-    title: "Artisanal Silk Tied Garden Bouquet",
-    description: "Hand-tied dusty rose blossoms, wild ranunculus, and dried lavender wrapped in unbleached kraft paper.",
-    price: "85.00",
-    assetType: "bouquets",
-    tags: ["hand-tied", "roses", "signature"],
-    views: 640,
-    imageUrl: "/images/bouquet_artisan.jpg",
-    thumbnails: ["/images/bouquet_artisan.jpg"],
-    activeThumbnailIndex: 0,
-  },
-  {
-    id: "botanical-orchid-03",
-    title: "Travertine & Orchid Sculptural Centerpiece",
-    description: "Blush moth orchids with bleached botanical ferns nestled in a handcrafted wabi-sabi ceramic vessel.",
-    price: "145.00",
-    assetType: "collections",
-    tags: ["sculptural", "orchids", "home"],
-    views: 420,
-    imageUrl: "/images/botanical_arrangement.jpg",
-    thumbnails: ["/images/botanical_arrangement.jpg"],
-    activeThumbnailIndex: 0,
-  },
-  {
-    id: "workshop-botanical-04",
-    title: "Seasonal Floral Design Masterclass",
-    description: "An intimate 2.5-hour workshop in our sunlit greenhouse covering foam-free floral mechanics and color theory.",
-    price: "160.00",
-    assetType: "workshops",
-    tags: ["workshop", "masterclass", "experience"],
-    views: 950,
-    imageUrl: "/images/floral_workshop.jpg",
-    thumbnails: ["/images/floral_workshop.jpg"],
-    activeThumbnailIndex: 0,
-  },
 ];
 
 export default function CollectionsPage() {
@@ -96,13 +45,8 @@ export default function CollectionsPage() {
       const data = await res.json();
       if (!data.success) throw new Error(data.error);
 
-      // If DB has returned items, use them; if empty, fallback
-      if (data.data && data.data.length > 0) {
-        return data.data;
-      }
-      return FALLBACK_COLLECTION_ITEMS;
+      return (data.data as ProductItem[]) || [];
     },
-    initialData: FALLBACK_COLLECTION_ITEMS,
   });
 
   // Client-side search filter
@@ -124,8 +68,8 @@ export default function CollectionsPage() {
         <AtelierRadialBackdrop
           variant="terracotta-earth"
           placement="center"
-          intensity={1.1}
-          className="p-8 sm:p-12 text-center max-w-4xl mx-auto shadow-2xl border border-amber-500/20 text-white"
+          intensity={1.2}
+          className="p-8 sm:p-12 text-center shadow-2xl border border-amber-500/20 text-white"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/25 text-amber-300 text-xs tracking-wider uppercase font-medium mb-4 backdrop-blur-xs">
             <span className="relative flex h-2 w-2">
@@ -134,7 +78,7 @@ export default function CollectionsPage() {
             </span>
             <span>Botanical Portfolio</span>
           </div>
-          <h1 className="font-serif text-4xl sm:text-5xl text-white tracking-tight">
+          <h1 className="font-serif text-3xl sm:text-4xl text-white tracking-tight">
             The Atelier Collection
           </h1>
           <p className="mt-3 text-sm sm:text-base text-stone-300 font-light max-w-xl mx-auto leading-relaxed">
@@ -229,9 +173,8 @@ export default function CollectionsPage() {
       {/* Product Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {isLoading ? (
-          <div className="py-24 flex flex-col items-center justify-center text-neutral-400">
-            <Loader2 className="size-8 animate-spin text-stone-600 mb-3" />
-            <p className="text-sm">Curating botanical items...</p>
+          <div className="py-20 flex items-center justify-center">
+            <RelaxingLoader label="Curating handcrafted creations..." size={150} />
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="py-20 text-center rounded-3xl border border-dashed border-stone-300 bg-white/50 p-8 max-w-lg mx-auto">

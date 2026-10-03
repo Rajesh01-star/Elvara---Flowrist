@@ -71,16 +71,6 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/bouquets" className="hover:text-neutral-950 transition-colors">
-                  Seasonal Bouquets
-                </Link>
-              </li>
-              <li>
-                <Link href="/workshops" className="hover:text-neutral-950 transition-colors">
-                  Floral Workshops
-                </Link>
-              </li>
-              <li>
                 <Link href="/about" className="hover:text-neutral-950 transition-colors">
                   Our Story & Ethos
                 </Link>
@@ -105,10 +95,7 @@ export default function Footer() {
                   My Home Navadweepa, 606, Varuna, Patrika Nagar, Madhapur, Hitec City Road, Hyderabad – 500081
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <Clock size={16} className="text-stone-500 shrink-0" />
-                <span>Tue – Sun: 9:00 AM – 7:00 PM</span>
-              </div>
+
               <div className="flex items-center gap-2">
                 <Phone size={16} className="text-stone-500 shrink-0" />
                 <a href="tel:+919652722499" className="hover:text-neutral-900 transition-colors">

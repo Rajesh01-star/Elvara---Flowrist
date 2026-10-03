@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function getMediaUrl(url: string | null | undefined): string {
   if (!url) return "";
-  if (url.startsWith("data:") || url.startsWith("http://") || url.startsWith("https://")) {
+  if (url.startsWith("data:") || url.startsWith("http://") || url.startsWith("https://") || url.startsWith("/")) {
     return url;
   }
   const publicUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || "";

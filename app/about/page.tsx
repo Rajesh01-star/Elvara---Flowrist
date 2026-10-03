@@ -7,7 +7,7 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen pb-20 pt-10">
       {/* Hero Header */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
         <AtelierRadialBackdrop
           variant="botanical-dusk"
           placement="center"
@@ -21,24 +21,12 @@ export default function AboutPage() {
             </span>
             <span>Our Story & Philosophy</span>
           </div>
-          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-tight">
+          <h1 className="font-serif text-3xl sm:text-4xl text-white tracking-tight">
             Where Botanical Artistry Meets Mindful Craft
           </h1>
-          <p className="mt-4 text-base sm:text-lg text-stone-300 font-light max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-3 text-sm sm:text-base text-stone-300 font-light max-w-xl mx-auto leading-relaxed">
             Founded in Hyderabad by florist Sridevi Dasari, Elvara was born from a desire to return to the poetic, untamed soul of floristry — honoring nature’s fleeting perfection with sculptural grace.
           </p>
-
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs text-stone-200">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
-              <Leaf size={14} className="text-emerald-400" /> 100% Regenerative Sourcing
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
-              <Sparkles size={14} className="text-emerald-400" /> Foam-Free Sculptural Mechanics
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-xs">
-              <Clock size={14} className="text-emerald-400" /> Madhapur Studio · Hyderabad
-            </span>
-          </div>
         </AtelierRadialBackdrop>
       </div>
 
@@ -78,11 +66,11 @@ export default function AboutPage() {
       </div>
 
       {/* Story & Craft Narrative */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-xl border border-stone-200">
             <Image
-              src="/images/bouquet_artisan.jpg"
+              src="/images/bouquet_artisan.avif"
               alt="Handcrafted bouquet"
               fill
               className="object-cover"

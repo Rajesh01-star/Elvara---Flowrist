@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X, User as UserIcon, LogOut, Package, ShieldCheck, ChevronDown } from "lucide-react";
+import { Menu, X, User as UserIcon, LogOut, Package, ShieldCheck, ChevronDown, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useSession, signOut } from "@/lib/auth-client";
 import { getInitials } from "@/lib/utils";
@@ -16,16 +16,22 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [navigatingPath, setNavigatingPath] = useState<string | null>(null);
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const { data: session, isPending } = useSession();
   const pathname = usePathname();
   const router = useRouter();
 
+  // Reset navigating indicator when route change completes
+  useEffect(() => {
+    setNavigatingPath(null);
+  }, [pathname]);
+
   const navLinks = [
     { href: "/collections", label: "Collections" },
-    { href: "/bouquets", label: "Bouquets" },
-    { href: "/workshops", label: "Workshops" },
     { href: "/about", label: "About Us" },
+    { href: "/contact", label: "Contact" },
   ];
 
   // Detect current active nav item based on route
@@ -36,31 +42,48 @@ export default function Navbar() {
         (link.href !== "/" && pathname.startsWith(link.href))
     )?.href ?? null;
 
-  // Prefetch navigation pages for instant transitions
+  // Prefetch navigation and critical user pages for instantaneous switches
   useEffect(() => {
     navLinks.forEach((link) => {
       router.prefetch(link.href);
     });
+    router.prefetch("/dashboard");
+    router.prefetch("/admin");
   }, [router]);
 
   const handleSignOut = async () => {
+    if (isSigningOut) return;
+    setIsSigningOut(true);
     try {
       await signOut({
         fetchOptions: {
           onSuccess: () => {
             toast.success("Signed out successfully");
             setUserDropdownOpen(false);
+            setIsOpen(false);
             window.location.href = "/";
+          },
+          onError: () => {
+            setIsSigningOut(false);
+            toast.error("Failed to sign out");
           },
         },
       });
     } catch {
+      setIsSigningOut(false);
       toast.error("Failed to sign out");
     }
   };
 
   return (
     <>
+      {/* Instant route transition top progress bar */}
+      {navigatingPath && (
+        <div className="fixed top-0 left-0 right-0 h-1 z-[100] bg-stone-100 overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-amber-500 via-amber-600 to-amber-400 animate-pulse w-full transition-all duration-300" />
+        </div>
+      )}
+
       <motion.nav
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -73,9 +96,9 @@ export default function Navbar() {
             <Image
               src="/images/final_logo.png"
               alt="Elvara Florist Logo"
-              width={46}
-              height={46}
-              className="w-10 h-10 sm:w-11 sm:h-11 object-contain rounded-full transition-transform duration-300 group-hover:scale-105"
+              width={56}
+              height={56}
+              className="w-10 h-10 sm:w-14 sm:h-14 object-contain rounded-full transition-transform duration-300 group-hover:scale-105"
               priority
             />
             <span className="font-serif text-lg sm:text-xl font-medium tracking-wide text-neutral-900">
@@ -149,21 +172,37 @@ export default function Navbar() {
                       <div className="py-1">
                         <Link
                           href="/dashboard"
-                          onClick={() => setUserDropdownOpen(false)}
-                          className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-neutral-700 hover:bg-stone-100 transition-colors"
+                          onClick={() => {
+                            setUserDropdownOpen(false);
+                            if (pathname !== "/dashboard") setNavigatingPath("/dashboard");
+                          }}
+                          className="flex items-center justify-between rounded-xl px-3 py-2 text-xs text-neutral-700 hover:bg-stone-100 transition-colors"
                         >
-                          <Package size={15} className="text-neutral-500" />
-                          <span>Orders & Purchases</span>
+                          <div className="flex items-center gap-2.5">
+                            <Package size={15} className="text-neutral-500" />
+                            <span>{session.user.isAdmin ? "Orders & Deliveries" : "Orders & Purchases"}</span>
+                          </div>
+                          {navigatingPath === "/dashboard" && (
+                            <Loader2 size={13} className="animate-spin text-stone-600" />
+                          )}
                         </Link>
 
                         {session.user.isAdmin && (
                           <Link
                             href="/admin"
-                            onClick={() => setUserDropdownOpen(false)}
-                            className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-amber-900 bg-amber-50/70 hover:bg-amber-100/70 transition-colors mt-0.5"
+                            onClick={() => {
+                              setUserDropdownOpen(false);
+                              if (pathname !== "/admin") setNavigatingPath("/admin");
+                            }}
+                            className="flex items-center justify-between rounded-xl px-3 py-2 text-xs text-neutral-700 hover:bg-stone-100 transition-colors"
                           >
-                            <ShieldCheck size={15} className="text-amber-700" />
-                            <span>Admin Studio CMS</span>
+                            <div className="flex items-center gap-2.5">
+                              <ShieldCheck size={15} className="text-neutral-700" />
+                              <span>Admin Studio CMS</span>
+                            </div>
+                            {navigatingPath === "/admin" && (
+                              <Loader2 size={13} className="animate-spin text-stone-600" />
+                            )}
                           </Link>
                         )}
                       </div>
@@ -171,10 +210,15 @@ export default function Navbar() {
                       <div className="border-t border-stone-100 pt-1">
                         <button
                           onClick={handleSignOut}
-                          className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-rose-600 hover:bg-rose-50 transition-colors text-left"
+                          disabled={isSigningOut}
+                          className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs text-rose-600 hover:bg-rose-50 transition-colors text-left disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed"
                         >
-                          <LogOut size={15} />
-                          <span>Sign Out</span>
+                          {isSigningOut ? (
+                            <Loader2 size={15} className="animate-spin text-rose-600" />
+                          ) : (
+                            <LogOut size={15} />
+                          )}
+                          <span>{isSigningOut ? "Signing Out..." : "Sign Out"}</span>
                         </button>
                       </div>
                     </motion.div>
@@ -259,28 +303,45 @@ export default function Navbar() {
                       </div>
                       <Link
                         href="/dashboard"
-                        onClick={() => setIsOpen(false)}
-                        className="w-full text-center bg-stone-100 text-neutral-900 rounded-full py-2.5 text-xs font-medium hover:bg-stone-200 transition-colors"
+                        onClick={() => {
+                          setIsOpen(false);
+                          if (pathname !== "/dashboard") setNavigatingPath("/dashboard");
+                        }}
+                        className="w-full flex items-center justify-center gap-2 bg-stone-100 text-neutral-900 rounded-full py-2.5 text-xs font-medium hover:bg-stone-200 transition-colors"
                       >
-                        Orders & Dashboard
+                        <span>{session.user.isAdmin ? "Orders & Deliveries" : "Orders & Purchases"}</span>
+                        {navigatingPath === "/dashboard" && (
+                          <Loader2 size={13} className="animate-spin text-stone-600" />
+                        )}
                       </Link>
                       {session.user.isAdmin && (
                         <Link
                           href="/admin"
-                          onClick={() => setIsOpen(false)}
-                          className="w-full text-center bg-amber-50 text-amber-900 border border-amber-200 rounded-full py-2.5 text-xs font-medium"
+                          onClick={() => {
+                            setIsOpen(false);
+                            if (pathname !== "/admin") setNavigatingPath("/admin");
+                          }}
+                          className="w-full flex items-center justify-center gap-2 bg-stone-100 text-neutral-900 rounded-full py-2.5 text-xs font-medium hover:bg-stone-200 transition-colors"
                         >
-                          Admin Studio CMS
+                          <span>Admin Studio CMS</span>
+                          {navigatingPath === "/admin" && (
+                            <Loader2 size={13} className="animate-spin text-stone-600" />
+                          )}
                         </Link>
                       )}
                       <button
-                        onClick={() => {
-                          setIsOpen(false);
-                          handleSignOut();
-                        }}
-                        className="w-full text-center text-rose-600 py-1.5 text-xs font-medium"
+                        onClick={handleSignOut}
+                        disabled={isSigningOut}
+                        className="w-full flex items-center justify-center gap-2 text-center text-rose-600 py-1.5 text-xs font-medium disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed"
                       >
-                        Sign Out
+                        {isSigningOut ? (
+                          <>
+                            <Loader2 size={13} className="animate-spin text-rose-600" />
+                            <span>Signing Out...</span>
+                          </>
+                        ) : (
+                          <span>Sign Out</span>
+                        )}
                       </button>
                     </>
                   ) : (

@@ -1,12 +1,12 @@
 "use server";
 
 import { db } from "@/db/drizzle";
-import { productsTable, ordersTable, systemSettingsTable } from "@/db/schema";
+import { productsTable, ordersTable, systemSettingsTable, testimonialsTable, user } from "@/db/schema";
 import { PRODUCT_SELECT_FIELDS, PRODUCT_PUBLIC_FIELDS, getOrderByClause } from "@/db/queries";
-import { auth } from "@/lib/auth";
+import { auth, isConfiguredAdminEmail } from "@/lib/auth";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { eq, desc, sql, arrayContains, and } from "drizzle-orm";
+import { eq, desc, asc, sql, arrayContains, and } from "drizzle-orm";
 import { getUploadPresignedUrl, getDownloadPresignedUrl } from "@/lib/r2";
 import { v4 as uuidv4 } from "uuid";
 
@@ -14,10 +14,40 @@ export async function requireAdmin() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  if (!session || !session.user || !session.user.isAdmin) {
-    throw new Error("Unauthorized: Only administrators can perform this action");
+  if (!session || !session.user) {
+    throw new Error("Unauthorized: Please sign in");
   }
+
+  if (!session.user.isAdmin) {
+    if (isConfiguredAdminEmail(session.user.email)) {
+      await db.update(user).set({ isAdmin: true, updatedAt: new Date() }).where(eq(user.id, session.user.id));
+      session.user.isAdmin = true;
+    } else {
+      throw new Error("Unauthorized: Only administrators can perform this action");
+    }
+  }
+
   return session;
+}
+
+export async function checkAdminStatusAction() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session || !session.user) {
+    return { authenticated: false, isAdmin: false, user: null };
+  }
+
+  if (!session.user.isAdmin && isConfiguredAdminEmail(session.user.email)) {
+    await db.update(user).set({ isAdmin: true, updatedAt: new Date() }).where(eq(user.id, session.user.id));
+    session.user.isAdmin = true;
+  }
+
+  return {
+    authenticated: true,
+    isAdmin: !!session.user.isAdmin,
+    user: session.user,
+  };
 }
 
 export async function requireAuth() {
@@ -138,6 +168,24 @@ export async function updateProductAction(formData: FormData) {
 }
 
 export const updatePostAction = updateProductAction;
+
+export async function deleteProductAction(id: string) {
+  await requireAdmin();
+
+  if (!id) {
+    throw new Error("Product ID is required");
+  }
+
+  await db.delete(productsTable).where(eq(productsTable.id, id));
+
+  revalidatePath("/");
+  revalidatePath("/collections");
+  revalidatePath("/admin");
+
+  return { success: true };
+}
+
+export const deletePostAction = deleteProductAction;
 
 export async function getProductsAction() {
   await requireAdmin();
@@ -323,5 +371,96 @@ export async function updateSystemSettingAction(key: string, value: string) {
   revalidatePath("/");
   revalidatePath("/admin");
 
+  return { success: true };
+}
+
+// ==============================================
+// Testimonials Actions (CMS)
+// ==============================================
+
+export async function getPublicTestimonialsAction() {
+  try {
+    const list = await db
+      .select()
+      .from(testimonialsTable)
+      .where(eq(testimonialsTable.isApproved, true))
+      .orderBy(asc(testimonialsTable.orderIndex), desc(testimonialsTable.createdAt));
+    return list;
+  } catch (error) {
+    console.error("Failed to fetch public testimonials:", error);
+    return [];
+  }
+}
+
+export async function getAdminTestimonialsAction() {
+  await requireAdmin();
+  return db
+    .select()
+    .from(testimonialsTable)
+    .orderBy(asc(testimonialsTable.orderIndex), desc(testimonialsTable.createdAt));
+}
+
+export async function createTestimonialAction(payload: {
+  author: string;
+  location?: string | null;
+  quote: string;
+  rating?: number;
+  isApproved?: boolean;
+  orderIndex?: number;
+}) {
+  await requireAdmin();
+  const [created] = await db
+    .insert(testimonialsTable)
+    .values({
+      author: payload.author.trim(),
+      location: payload.location?.trim() || null,
+      quote: payload.quote.trim(),
+      rating: payload.rating || 5,
+      isApproved: payload.isApproved !== undefined ? payload.isApproved : true,
+      orderIndex: payload.orderIndex || 0,
+    })
+    .returning();
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+  return created;
+}
+
+export async function updateTestimonialAction(
+  id: string,
+  payload: {
+    author?: string;
+    location?: string | null;
+    quote?: string;
+    rating?: number;
+    isApproved?: boolean;
+    orderIndex?: number;
+  }
+) {
+  await requireAdmin();
+  const updateData: any = {};
+  if (payload.author !== undefined) updateData.author = payload.author.trim();
+  if (payload.location !== undefined) updateData.location = payload.location?.trim() || null;
+  if (payload.quote !== undefined) updateData.quote = payload.quote.trim();
+  if (payload.rating !== undefined) updateData.rating = payload.rating;
+  if (payload.isApproved !== undefined) updateData.isApproved = payload.isApproved;
+  if (payload.orderIndex !== undefined) updateData.orderIndex = payload.orderIndex;
+
+  const [updated] = await db
+    .update(testimonialsTable)
+    .set(updateData)
+    .where(eq(testimonialsTable.id, id))
+    .returning();
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+  return updated;
+}
+
+export async function deleteTestimonialAction(id: string) {
+  await requireAdmin();
+  await db.delete(testimonialsTable).where(eq(testimonialsTable.id, id));
+  revalidatePath("/");
+  revalidatePath("/admin");
   return { success: true };
 }

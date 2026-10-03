@@ -397,9 +397,40 @@ Allows visitors and clients to submit custom wedding floral requests, workshop b
 
 ---
 
-## 8. Admin CMS Server Actions & Image Uploads
+## 8. Admin Authentication & Studio CMS
 
-Admin actions in `app/admin/actions.ts` are guarded by `requireAdmin()` (`session.user.isAdmin === true`).
+The Studio CMS is protected by a multi-layered authentication architecture:
+
+1. **Route Middleware (`middleware.ts`)**: Immediately intercepts requests to `/admin/*` (except `/admin/login`) and redirects unauthenticated visitors to `/admin/login?callbackUrl=...`.
+2. **Server-Side Layout Guard (`app/admin/(dashboard)/layout.tsx`)**: Validates cryptographic session tokens and verifies `session.user.isAdmin === true` before serving any admin markup.
+3. **Dedicated Admin Portal (`/admin/login`)**: Tailored login portal for atelier curators and staff. Validates admin privileges upon login and redirects customers away.
+4. **Server Actions Guard (`requireAdmin()`)**: Validates server-side permissions for mutations.
+
+### Provisioning Atelier Administrators
+
+You have two convenient methods to grant administrator rights:
+
+#### Method A: Environment Whitelist (Automatic Provisioning)
+Set `ADMIN_EMAILS` in `.env`:
+```env
+ADMIN_EMAILS="admin@elvara.com,curator@elvara.com"
+```
+Any user who signs up or signs in with an email in this list is automatically granted `isAdmin: true`.
+
+#### Method B: CLI Script
+Promote any registered user directly in the database:
+```bash
+# Grant admin privileges to a user
+npm run admin:grant user@example.com
+
+# Revoke admin privileges
+bun scripts/make-admin.ts user@example.com --revoke
+
+# List all registered users and their roles
+npm run admin:list
+```
+
+---
 
 ### 1. Uploading Product Images to Cloudflare R2
 Uploads go **directly from the client browser to Cloudflare R2** via S3 Presigned URLs for maximum speed and zero server overhead.

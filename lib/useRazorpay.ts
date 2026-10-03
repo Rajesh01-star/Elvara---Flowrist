@@ -2,8 +2,19 @@
 
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export type PaymentStatus = "idle" | "processing" | "success" | "failed";
+
+export interface CustomerInfo {
+  name?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
+  deliveryNotes?: string;
+}
 
 interface UseRazorpayOptions {
   onSuccess?: () => void;
@@ -33,6 +44,7 @@ function loadRazorpayScript(): Promise<boolean> {
  */
 export function useRazorpay(options?: UseRazorpayOptions) {
   const [statusMap, setStatusMap] = useState<Record<string, PaymentStatus>>({});
+  const queryClient = useQueryClient();
 
   const getStatus = useCallback(
     (postId: string): PaymentStatus => {
@@ -53,31 +65,74 @@ export function useRazorpay(options?: UseRazorpayOptions) {
   );
 
   const initiatePurchase = useCallback(
-    async (item: { id: string; title: string; price?: string | number | null }) => {
+    async (
+      item: { id: string; title: string; price?: string | number | null },
+      customerInfo?: CustomerInfo
+    ) => {
       if (!item.price || parseFloat(item.price.toString()) <= 0) return;
 
       const itemId = item.id;
       setStatus(itemId, "processing");
 
       try {
-        const isLoaded = await loadRazorpayScript();
-        if (!isLoaded) {
-          toast.error("Failed to load payment gateway SDK");
-          setStatus(itemId, "failed");
-          resetStatusAfterDelay(itemId);
-          return;
-        }
-
         const res = await fetch("/api/razorpay/create-order", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ postId: itemId }),
+          body: JSON.stringify({
+            postId: itemId,
+            customerName: customerInfo?.name,
+            customerEmail: customerInfo?.email,
+            customerPhone: customerInfo?.phone,
+            shippingAddress: customerInfo?.address,
+            city: customerInfo?.city,
+            postalCode: customerInfo?.postalCode,
+            deliveryNotes: customerInfo?.deliveryNotes,
+          }),
         });
 
         const data = await res.json();
 
         if (!res.ok) {
-          toast.error(data.error || "Failed to initialize order");
+          if (res.status === 401 || data.requiresAuth) {
+            toast.error("Please sign in first to place your order.");
+          } else {
+            toast.error(data.error || "Failed to initialize order");
+          }
+          setStatus(itemId, "failed");
+          resetStatusAfterDelay(itemId);
+          return;
+        }
+
+        // Demo Flow (Works even without active merchant keys or when deployed)
+        if (data.isDemo) {
+          const verifyRes = await fetch("/api/razorpay/verify-payment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              razorpay_order_id: data.orderId,
+              isDemo: true,
+            }),
+          });
+
+          const verifyData = await verifyRes.json();
+          if (verifyRes.ok && verifyData.success) {
+            setStatus(itemId, "success");
+            toast.success("Order placed successfully! Recorded in Orders & Purchases.");
+            queryClient.invalidateQueries({ queryKey: ["user-purchases"] });
+            queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
+            options?.onSuccess?.();
+          } else {
+            setStatus(itemId, "failed");
+            toast.error("Demo checkout verification failed.");
+            resetStatusAfterDelay(itemId);
+          }
+          return;
+        }
+
+        // Production Razorpay Flow
+        const isLoaded = await loadRazorpayScript();
+        if (!isLoaded) {
+          toast.error("Failed to load payment gateway SDK");
           setStatus(itemId, "failed");
           resetStatusAfterDelay(itemId);
           return;
@@ -106,6 +161,8 @@ export function useRazorpay(options?: UseRazorpayOptions) {
               if (verifyRes.ok && verifyData.success) {
                 setStatus(itemId, "success");
                 toast.success("Payment successful! Your order has been placed.");
+                queryClient.invalidateQueries({ queryKey: ["user-purchases"] });
+                queryClient.invalidateQueries({ queryKey: ["admin-stats"] });
                 options?.onSuccess?.();
               } else {
                 setStatus(itemId, "failed");
@@ -142,7 +199,7 @@ export function useRazorpay(options?: UseRazorpayOptions) {
         resetStatusAfterDelay(itemId);
       }
     },
-    [setStatus, resetStatusAfterDelay, options]
+    [setStatus, resetStatusAfterDelay, options, queryClient]
   );
 
   return { initiatePurchase, getStatus, setStatus };

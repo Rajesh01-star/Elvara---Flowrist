@@ -92,6 +92,13 @@ export const ordersTable = pgTable("orders", {
   amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
   status: text("status").default("created").notNull(), // 'created' | 'paid' | 'failed'
   paymentId: text("payment_id"), // Razorpay payment ID (e.g. pay_P123456)
+  customerName: text("customer_name"),
+  customerEmail: text("customer_email"),
+  customerPhone: text("customer_phone"),
+  shippingAddress: text("shipping_address"),
+  city: text("city"),
+  postalCode: text("postal_code"),
+  deliveryNotes: text("delivery_notes"),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "date" }).$onUpdate(() => new Date()),
 });
@@ -126,3 +133,22 @@ export type SelectPost = SelectProduct;
 
 export type InsertOrder = typeof ordersTable.$inferInsert;
 export type SelectOrder = typeof ordersTable.$inferSelect;
+
+// ==============================================
+// Testimonials Table
+// ==============================================
+
+export const testimonialsTable = pgTable("testimonials", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  author: text("author").notNull(),
+  location: text("location"),
+  quote: text("quote").notNull(),
+  rating: integer("rating").default(5).notNull(),
+  isApproved: boolean("is_approved").default(true).notNull(),
+  orderIndex: integer("order_index").default(0).notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).$onUpdate(() => new Date()),
+});
+
+export type InsertTestimonial = typeof testimonialsTable.$inferInsert;
+export type SelectTestimonial = typeof testimonialsTable.$inferSelect;

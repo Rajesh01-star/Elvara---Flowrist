@@ -1,11 +1,11 @@
 import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+const accountId = process.env.CLOUDFLARE_ACCOUNT_ID || process.env.R2_ACCOUNT_ID;
 const accessKeyId = process.env.R2_ACCESS_KEY_ID;
 const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
 const bucketName = process.env.R2_BUCKET_NAME; // Private bucket
-const publicBucketName = process.env.R2_PUBLIC_BUCKET_NAME; // Public bucket
+const publicBucketName = process.env.R2_PUBLIC_BUCKET_NAME || process.env.R2_BUCKET_NAME; // Public bucket
 
 export const r2Client = new S3Client({
   region: "auto",

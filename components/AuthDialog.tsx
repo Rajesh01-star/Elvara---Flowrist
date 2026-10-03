@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Mail, Lock, User, ArrowRight, Loader2 } from "lucide-react";
+import { X, Mail, Lock, User, ArrowRight, Loader2, Eye, EyeOff } from "lucide-react";
 import { signIn, signUp } from "@/lib/auth-client";
 import { toast } from "sonner";
 
@@ -21,6 +21,7 @@ export default function AuthDialog({
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -128,9 +129,6 @@ export default function AuthDialog({
 
             {/* Header */}
             <div className="text-center mb-6">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-amber-50 text-amber-900/80 text-xs tracking-wider uppercase font-medium mb-3">
-                <span>Artisanal Floral Boutique</span>
-              </div>
               <h2 className="text-2xl sm:text-3xl font-serif text-neutral-900">
                 {mode === "signin" ? "Welcome Back" : "Join Elvara"}
               </h2>
@@ -186,13 +184,21 @@ export default function AuthDialog({
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 size-4" />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full rounded-xl border border-neutral-200 pl-10 pr-4 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-900 focus:outline-none focus:ring-1 focus:ring-neutral-900 transition-all"
+                    className="w-full rounded-xl border border-neutral-200 pl-10 pr-10 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-900 focus:outline-none focus:ring-1 focus:ring-neutral-900 transition-all"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 focus:outline-none transition-colors"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                  </button>
                 </div>
               </div>
 

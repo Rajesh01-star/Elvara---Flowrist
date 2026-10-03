@@ -5,8 +5,9 @@ import Image from "next/image";
 import { motion } from "motion/react";
 import { ShoppingBag, Eye, ArrowUpRight, Loader2 } from "lucide-react";
 import { formatPrice, getActiveThumbnail, formatViews } from "@/lib/utils";
-import { useRazorpay } from "@/lib/useRazorpay";
+import { useRazorpay, CustomerInfo } from "@/lib/useRazorpay";
 import { useState } from "react";
+import CheckoutModal from "@/components/CheckoutModal";
 
 export interface ProductItem {
   id: string;
@@ -30,9 +31,14 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, priority = false }: ProductCardProps) {
   const [imageError, setImageError] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+
   const { initiatePurchase, getStatus } = useRazorpay({
     brandName: "Elvara Florist",
     themeColor: "#1c1917",
+    onSuccess: () => {
+      setCheckoutOpen(false);
+    },
   });
 
   const paymentStatus = getStatus(product.id);
@@ -45,11 +51,18 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
   const handleQuickBuy = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    initiatePurchase({
-      id: product.id,
-      title: product.title,
-      price: product.price || null,
-    });
+    setCheckoutOpen(true);
+  };
+
+  const handleConfirmPurchase = async (customerInfo: CustomerInfo) => {
+    await initiatePurchase(
+      {
+        id: product.id,
+        title: product.title,
+        price: product.price || null,
+      },
+      customerInfo
+    );
   };
 
   const isWorkshop = product.assetType === "workshops";
@@ -165,6 +178,14 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
           </button>
         </div>
       </div>
+
+      <CheckoutModal
+        isOpen={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        product={product}
+        onConfirmPurchase={handleConfirmPurchase}
+        isProcessing={isPurchasing}
+      />
     </motion.div>
   );
 }

@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "admin:create": "bun scripts/create-admin.ts",
+    "admin:grant": "bun scripts/make-admin.ts",
+    "admin:list": "bun scripts/make-admin.ts --list"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1138.0",

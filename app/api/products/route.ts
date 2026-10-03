@@ -56,3 +56,57 @@ export async function GET(request: Request) {
     );
   }
 }
+
+export async function POST(request: Request) {
+  try {
+    const { auth, isConfiguredAdminEmail } = await import("@/lib/auth");
+    const { headers } = await import("next/headers");
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session || !session.user) {
+      return NextResponse.json({ success: false, error: "Unauthorized: Please sign in" }, { status: 401 });
+    }
+
+    if (!session.user.isAdmin && !isConfiguredAdminEmail(session.user.email)) {
+      return NextResponse.json({ success: false, error: "Unauthorized: Admin privileges required" }, { status: 403 });
+    }
+
+    const body = await request.json();
+    if (!body.title || !body.title.trim()) {
+      return NextResponse.json({ success: false, error: "Title is required" }, { status: 400 });
+    }
+
+    const [inserted] = await db
+      .insert(productsTable)
+      .values({
+        title: body.title.trim(),
+        description: body.description?.trim() || null,
+        price: body.price ? body.price.toString().trim() : null,
+        url: body.url || null,
+        aspect: body.aspect || "horizontal",
+        thumbnails: Array.isArray(body.thumbnails) ? body.thumbnails : [],
+        activeThumbnailIndex: body.activeThumbnailIndex || 0,
+        assetType: body.assetType || "bouquets",
+        sourceLink: body.sourceLink || null,
+        tags: Array.isArray(body.tags) ? body.tags : [],
+        fileUrl: body.fileUrl || null,
+        references: Array.isArray(body.references) ? body.references : [],
+        userId: session.user.id,
+      })
+      .returning();
+
+    return NextResponse.json({
+      success: true,
+      data: inserted,
+    });
+  } catch (error: any) {
+    console.error("Failed to create product:", error);
+    return NextResponse.json(
+      { success: false, error: error?.message || "Failed to create product" },
+      { status: 500 }
+    );
+  }
+}
+
