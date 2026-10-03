@@ -272,69 +272,6 @@ export default function CustomerDashboardPage() {
     <main className="min-h-screen pb-24 pt-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Admin Delivery Dispatch Banner & Filter */}
-        {userIsAdmin && (
-          <div className="rounded-3xl bg-amber-50/70 border border-amber-200/80 p-5 sm:p-6 mb-8 shadow-xs">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="size-11 rounded-2xl bg-amber-500/10 text-amber-900 flex items-center justify-center border border-amber-500/20 shrink-0">
-                  <Truck size={22} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-serif text-lg font-medium text-neutral-900">
-                      Florist Delivery Dispatch (Admin)
-                    </h3>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-amber-200 text-amber-950">
-                      Admin Mode
-                    </span>
-                  </div>
-                  <p className="text-xs text-neutral-600 mt-0.5">
-                    {adminViewMode === "all"
-                      ? "Displaying all customer orders with recipient addresses and gift card notes for packaging and delivery."
-                      : "Displaying only personal orders made by your admin account."}
-                  </p>
-                </div>
-              </div>
-
-              {/* View Switcher Filter */}
-              <div className="flex items-center bg-white rounded-full p-1 border border-amber-200/80 shadow-2xs self-start md:self-auto">
-                <button
-                  type="button"
-                  onClick={() => setAdminViewMode("all")}
-                  className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                    adminViewMode === "all"
-                      ? "bg-neutral-900 text-white shadow-xs"
-                      : "text-stone-600 hover:text-neutral-900 hover:bg-stone-50"
-                  }`}
-                >
-                  <ShoppingBag size={13} />
-                  <span>All Customer Orders</span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-semibold ${
-                      adminViewMode === "all" ? "bg-white/20 text-white" : "bg-stone-100 text-stone-600"
-                    }`}
-                  >
-                    {purchases.length}
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setAdminViewMode("mine")}
-                  className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                    adminViewMode === "mine"
-                      ? "bg-neutral-900 text-white shadow-xs"
-                      : "text-stone-600 hover:text-neutral-900 hover:bg-stone-50"
-                  }`}
-                >
-                  <User size={13} />
-                  <span>My Personal Orders</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Orders Section Header */}
         <div className="space-y-6">
           <div className="flex items-center justify-between border-b border-stone-200/80 pb-4">
